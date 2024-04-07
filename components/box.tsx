@@ -135,7 +135,7 @@ const TemperatureCurrent = (props: any) => {
                                 <div>
                                     <p>Humidity: {currentWeather.daily[indexSelectDay].humidity}%</p>
                                     <p>Wind: {currentWeather.daily[indexSelectDay].wind_speed} {degreeUnit === 'metric' ? 'KPH' : 'MPH'} {degreeToWindDirection(currentWeather.daily[indexSelectDay].wind_deg)}</p>
-                                    <p>Air Quality: {currentAirQuality && currentAirQuality.list && currentAirQuality.list.length > 0 && pickAirQuality(currentAirQuality.list[0].main.aqi)}</p>
+
                                 </div>
 
                             </div>
