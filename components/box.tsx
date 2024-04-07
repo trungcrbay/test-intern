@@ -88,14 +88,14 @@ const TemperatureCurrent = (props: any) => {
                                 <p className="font-bold text-[44px]">
                                     {currentWeather.current.temp.toFixed()}°
                                     <span className="ml-2 align-text-top text-[14px]">
-                                        <span className={clsx("cursor-pointer",{
+                                        <span className={clsx("cursor-pointer", {
                                             "text-gray-300": degreeUnit === 'metric'
                                         })}
-                                         onClick={() => setDegreeUnit('imperial')}>F</span> /
-                                        <span className={clsx("cursor-pointer",{
-                                             "text-gray-300": degreeUnit === 'imperial'
+                                            onClick={() => setDegreeUnit('imperial')}>F</span> /
+                                        <span className={clsx("cursor-pointer", {
+                                            "text-gray-300": degreeUnit === 'imperial'
                                         })}
-                                        onClick={() => setDegreeUnit('metric')}>C</span>
+                                            onClick={() => setDegreeUnit('metric')}>C</span>
                                     </span>
                                 </p>
 
@@ -120,7 +120,14 @@ const TemperatureCurrent = (props: any) => {
                                     <p className="font-bold text-[44px]">
                                         {currentWeather.daily[indexSelectDay].temp.max.toFixed()}°
                                         <span className="ml-2 align-text-top text-[14px]">
-                                            <span className="cursor-pointer">F</span> / <span className="cursor-pointer">C</span>
+                                            <span className={clsx("cursor-pointer", {
+                                                "text-gray-300": degreeUnit === 'metric'
+                                            })}
+                                                onClick={() => setDegreeUnit('imperial')}>F</span> /
+                                            <span className={clsx("cursor-pointer", {
+                                                "text-gray-300": degreeUnit === 'imperial'
+                                            })}
+                                                onClick={() => setDegreeUnit('metric')}>C</span>
                                         </span>
                                     </p>
 
