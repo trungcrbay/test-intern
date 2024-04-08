@@ -3,26 +3,26 @@
 import { useEffect, useState } from "react";
 import TemperatureCurrent from "./box";
 import InputField from "./input";
-import SelectDay from "./select";
 import { useDebounce } from "@/hooks/useDebounced";
+import { callFetchDataCountry } from "@/services/api";
 
 const Wrapper = () => {
     const [country, setCountry] = useState<string>("");
     const cityValue = useDebounce(country, 700, async () => { })
     console.log("chekc city value:", cityValue)
     const [dataCountry, setDataCountry] = useState<any>([]);
-    const fetchDataCountry = async () => {
-        try {
-            const res = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityValue}&limit=5&appid=1c5da32bd6a0d1c4c017b21b49833c7f`)
-            const data = await res.json()
-            setDataCountry(data);
-        } catch (e) {
-            alert(e)
+
+    const handleFetchDataCountry = async () => {
+        if (cityValue) {
+            const response = await callFetchDataCountry(cityValue);
+            setDataCountry(response)
+        } else {
+            console.error("dataCountry is invalid");
         }
     }
 
     useEffect(() => {
-        fetchDataCountry();
+        handleFetchDataCountry();
     }, [cityValue])
 
     return (
@@ -30,7 +30,7 @@ const Wrapper = () => {
             <InputField country={country} setCountry={setCountry} />
             {country ? <>
                 <TemperatureCurrent dataCountry={dataCountry[0]} setDataCountry={setDataCountry} />
-                <SelectDay />
+            
             </> :
                 <div className="">
                     <div className="flex justify-center">

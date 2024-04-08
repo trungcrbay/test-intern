@@ -1,4 +1,6 @@
 "use client";
+import { callFetchAirQuality, callFetchDataCurrent } from "@/services/api";
+import { convertToDay, convertToDayOfWeekAndTime, degreeToWindDirection, pickAirQuality } from "@/utils/convert";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
@@ -6,70 +8,35 @@ const TemperatureCurrent = (props: any) => {
     const { dataCountry } = props;
     const [currentWeather, setCurrentWeather] = useState<any>([]);
     const [currentAirQuality, setCurrentAirQuality] = useState<any>([]);
-    const [isCelcius, setIsCelsius] = useState<boolean>(false);
     //metric: độ C, imperial: độ F
     const [degreeUnit, setDegreeUnit] = useState("metric");
     const [indexSelectDay, setIndexSelectDay] = useState(0)
 
-    const fetchDataCurrent = async () => {
-        if (dataCountry) {
-            const res = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${dataCountry.lat}&lon=${dataCountry.lon}&units=${degreeUnit}&exclude=hourly&appid=${process.env.API_KEY}`)
-            const data = await res.json()
-            setCurrentWeather(data);
+    const handleFetchDataCurrent = async () => {
+        if (dataCountry && dataCountry.lat && dataCountry.lon) {
+            const response = await callFetchDataCurrent(dataCountry, dataCountry.lat, dataCountry.lon, degreeUnit);
+            setCurrentWeather(response)
+        } else {
+            console.error("dataCountry is invalid");
         }
     }
 
-    const fetchAirQuality = async () => {
-        if (dataCountry) {
-            const res = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${dataCountry.lat}&lon=${dataCountry.lon}&appid=${process.env.API_KEY}`)
-            const data = await res.json()
-            setCurrentAirQuality(data);
+    const handleFetchAirQuality = async () => {
+        if (dataCountry && dataCountry.lat && dataCountry.lon) {
+            const response = await callFetchAirQuality(dataCountry, dataCountry.lat, dataCountry.lon);
+            setCurrentAirQuality(response)
+        } else {
+            console.error("dataCountry is invalid");
         }
     }
 
     useEffect(() => {
-        fetchAirQuality();
-        fetchDataCurrent();
+        handleFetchAirQuality();
+        handleFetchDataCurrent()
     }, [dataCountry, degreeUnit])
 
-    const convertToDayOfWeekAndTime = (timestamp: number) => {
-        const date = new Date(timestamp * 1000); //*1000 convert to miliseconds
-        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' }); //weekday:long => get full name of day
-        const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }); //lấy giờ và phút dưới dạng số
-        return `${dayOfWeek} ${time}`;
-    }
 
-    const convertToDay = (timestamp: number) => {
-        const date = new Date(timestamp * 1000); //*1000 convert to miliseconds
-        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' }); //weekday:short => get 1 part  name of day
-        return dayOfWeek;
-    }
 
-    const degreeToWindDirection = (degree: number) => {
-        const val = Math.floor((degree / 22.5) + 0.5);
-        const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
-        return directions[(val % 16)];
-    }
-
-    const pickAirQuality = (airQuality: number) => {
-        switch (airQuality) {
-            case 1:
-                return "Good";
-                break;
-            case 2:
-                return "Fair";
-                break;
-            case 3:
-                return "Moderate";
-                break;
-            case 4:
-                return "Poor";
-                break;
-
-            default:
-                return "Very Poor"
-        }
-    }
 
     return (
         <>
